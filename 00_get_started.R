@@ -1,19 +1,23 @@
-# Get Started -- pRef package ---------------------------------------------# 
+# Get Started: pRef package --------------------------------------------- 
+#
 # install.packages("rPref") 
 # install.packages("dplyr") 
 # install.packages("igraph") 
-# install.packages("ggplot")
+# install.packages("ggplot2")
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("Rgraphviz")
+# biocLite("graph")
 
 require("rPref") 
 require("dplyr") 
 require("igraph") 
-require("ggplot")
+require("ggplot2")
 
 
 # Skyline plot ------------------------------------------------------------
 # Calculate Skyline 
 sky1 <- psel(mtcars, high(mpg) * high(hp)) 
-
+head(mtcars)
 # Plot mpg and hp values of mtcars and highlight the skyline 
 ggplot(mtcars, aes(x = mpg, y = hp)) +
   geom_point(shape = 21) +
@@ -56,5 +60,9 @@ btg <- get_btg(df, pref)
 str(btg)
 
 # Create labels for the nodes containing relevant values 
-labels <- paste0(df$mpg, "\n", df$wt)
-plot_btg(df, pref, labels)
+labels <- paste0("mpg:", df$mpg, ", wt:", df$wt)
+plot_btg(df, pref, labels = labels, use_dot = TRUE)
+
+
+# end ---------------------------------------------------------------------
+
