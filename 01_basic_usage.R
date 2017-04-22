@@ -6,6 +6,7 @@
 
 require("rPref") 
 require("dplyr") 
+require("magrittr")
 require("igraph") 
 require("ggplot2")
 
@@ -31,7 +32,6 @@ str(res)
 # Visualize the level values by the color of the points 
 gp <- ggplot(res, aes(x = mpg, y = hp, color = factor(.level))) + 
   geom_point(size = 3) 
-gp 
 gp + geom_step(direction = "vh")
 
 
@@ -40,23 +40,27 @@ gp + geom_step(direction = "vh")
 df <- group_by(mtcars, cyl)
 
 # Calculate Grouped Skyline
-sky2 <- psel(df, high(mpg) * high(hp))
+sky2 <- mtcars %>% 
+  group_by(cyl) %>% 
+  psel(high(mpg) * high(hp))
 
-summarise(sky2, skyline_size = n())
 ggplot(mtcars, aes(x = mpg, y = hp)) + 
   geom_point(shape = 21) + 
-  geom_point(aes(color = factor(sky2$cyl)), sky2, size = 3)
+  geom_point(aes(color = factor(sky2$cyl)),
+             sky2, size = 4)
+
+summarise(sky2, skyline_size = n())
 
 
 # Better-Than-Graph for the preference order ------------------------------
 # Pick a small data set and create preference / BTG 
-df <- mtcars[1:8,] 
+df <- cbind(N=1:8, mtcars[1:8,]) 
 pref <- high(mpg) * low(wt) 
 btg <- get_btg(df, pref) 
 str(btg)
 
 # Create labels for the nodes containing relevant values 
-labels <- paste0("mpg:", df$mpg, ", wt:", df$wt)
+labels <- paste0(df$N,": mpg=", df$mpg, ",wt=", df$wt)
 plot_btg(df, pref, labels = labels, use_dot = TRUE)
 
 

@@ -7,11 +7,11 @@ require("ggplot2")
 
 # Calculate Skyline 
 mtcars %>% 
-  psel(low(mpg) * low(hp)) %>% 
+  psel(high(mpg) * high(hp)) %>% 
   arrange(mpg)
 
 # Calculate the level-value w.r.t. p by using top-all 
-p <- low(mpg) * low(hp)
+p <- high(mpg) * high(hp)
 mtcars %>% 
   psel(p, top = nrow(.)) %>% 
   ggplot(aes(x = mpg, y = hp,
